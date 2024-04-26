@@ -7,22 +7,16 @@ const sendAllGames = async (req, res) => {
 
 const deleteGame = async (req, res) => {
     
-    // Прочитаем запрашиваемый id игры из запроса
     const gameId = Number(req.params.id);
 
-    // Найдём игру, которую хотят удалить, в общем массиве с играми по id
     req.game = req.games.find((item) => item.id === gameId);
 
-    // Найдём индекс удаляемой игры в общем массиве игр
     const index = req.games.findIndex((item) => item.id === gameId);
 
-    // Удалим из массива игр игру
     req.games.splice(index, 1);
 
-    // Запишем обновлённый массив игр в JSON-файл
     await writeData("./data/games.json", req.games);
 
-    // Вернём ответ о проделанной операции с данными о играх
     res.send({
         games: req.games,
         updated: req.game
@@ -31,11 +25,8 @@ const deleteGame = async (req, res) => {
 
 const addGame = async (req, res) => {
     
-    // Проверяем, есть ли уже в списке игра с таким же названием
     req.isNew = !Boolean(req.games.find(item => item.title === req.body.title));
-    // Если игра, которую хотим добавить, новая (её не было в списке)
     if (req.isNew) {
-        // Добавляем объект с данными о новой игре
         const inArray = req.games.map(item => Number(item.id));
         let maximalId;
         if (inArray.length > 0) {
